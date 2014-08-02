@@ -59,49 +59,52 @@ Public Class frmMain
             Exit Sub
         End If
 
+        'store user seetins
         My.Settings.MandrillAPI = Me.txtMandrill.Text
-        'send
+        My.Settings.FromEmail = Me.txtFromEmail.Text
+        My.Settings.FromName = Me.txtFromName.Text
+
+        'loop thriugh each contact
         Try
-            Dim api As New MandrillApi(Me.txtMandrill.Text)
-
-            Dim email As New Mandrill.EmailMessage()
-            email.auto_text = True
-            email.from_email = Me.txtFromEmail.Text
-            email.from_name = Me.txtFromName.Text
-            'email.AddHeader("Reply-To", replyto)
-
-            email.html = Me.txtBody.Text
-            email.important = False
-            'Dim metadata As New Metadata()
-            'metadata.website = "test.com"
-            'message.metadata = metadata
-            email.subject = Me.txtSubject.Text
-
-            Dim lstTags As New List(Of String)
-            lstTags.Add(Me.txtTag.Text)
-            email.tags = lstTags
-            email.track_clicks = True
-            email.track_opens = True
-
-            Dim lstSendTo As New List(Of EmailAddress)
             For Each c As Contact In lstContact
+                Dim api As New MandrillApi(Me.txtMandrill.Text)
+
+                Dim email As New Mandrill.EmailMessage()
+                email.auto_text = True
+                email.from_email = Me.txtFromEmail.Text
+                email.from_name = Me.txtFromName.Text
+                'email.AddHeader("Reply-To", replyto)
+
+                email.html = Me.txtBody.Text.Replace("{First}", c.First).Replace("{Last}", c.Last)
+                email.important = False
+                'Dim metadata As New Metadata()
+                'metadata.website = "test.com"
+                'message.metadata = metadata
+                email.subject = Me.txtSubject.Text
+
+                Dim lstTags As New List(Of String)
+                lstTags.Add(Me.txtTag.Text)
+                email.tags = lstTags
+                email.track_clicks = True
+                email.track_opens = True
+
+                Dim lstSendTo As New List(Of EmailAddress)
                 lstSendTo.Add(New EmailAddress(c.Email, c.First & " " & c.Last, "to"))
+                email.to = lstSendTo
+
+                Dim emailresults As New List(Of Mandrill.EmailResult)
+                emailresults = api.SendMessage(email)
+
+                'For Each t As EmailResult In emailresults
+
+                '    If EmailResultStatus.Sent = EmailResultStatus.Sent Then
+                '        MsgBox("Emails sent")
+                '    Else
+                '        MsgBox("Error sending")
+                '    End If
+
+                'Next
             Next
-            email.to = lstSendTo
-
-            Dim emailresults As New List(Of Mandrill.EmailResult)
-            emailresults = api.SendMessage(email)
-
-            'For Each t As EmailResult In emailresults
-
-            '    If EmailResultStatus.Sent = EmailResultStatus.Sent Then
-            '        MsgBox("Emails sent")
-            '    Else
-            '        MsgBox("Error sending")
-            '    End If
-
-            'Next
-
             MsgBox("Emails sent")
         Catch ex As Exception
             MsgBox("Error sending:" & ex.Message)
@@ -220,10 +223,22 @@ Public Class frmMain
 
         txtBody.SelectedText = "<br>"
         Me.txtBody.Focus()
-        'Me.txtBody.Text.Insert(Me.txtBody.SelectionStart, "<br/>")
     End Sub
 
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles Me.Load
+        'load user settings
         If String.IsNullOrEmpty(My.Settings.MandrillAPI) = False Then Me.txtMandrill.Text = My.Settings.MandrillAPI
+        If String.IsNullOrEmpty(My.Settings.FromEmail) = False Then Me.txtFromEmail.Text = My.Settings.FromEmail
+        If String.IsNullOrEmpty(My.Settings.FromName) = False Then Me.txtFromName.Text = My.Settings.FromName
+    End Sub
+
+    Private Sub btnFirst_Click(sender As Object, e As EventArgs) Handles btnFirst.Click
+        txtBody.SelectedText = "{First}"
+        Me.txtBody.Focus()
+    End Sub
+
+    Private Sub btnLast_Click(sender As Object, e As EventArgs) Handles btnLast.Click
+        txtBody.SelectedText = "{Last}"
+        Me.txtBody.Focus()
     End Sub
 End Class

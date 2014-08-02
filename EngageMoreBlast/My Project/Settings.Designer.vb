@@ -54,15 +54,39 @@ Namespace My
             End Get
         End Property
         
-        <Global.System.Configuration.UserScopedSettingAttribute(), _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(), _
-         Global.System.Configuration.DefaultSettingValueAttribute("")> _
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
         Public Property MandrillAPI() As String
             Get
-                Return CType(Me("MandrillAPI"), String)
+                Return CType(Me("MandrillAPI"),String)
             End Get
-            Set(value As String)
+            Set
                 Me("MandrillAPI") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property FromName() As String
+            Get
+                Return CType(Me("FromName"),String)
+            End Get
+            Set
+                Me("FromName") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property FromEmail() As String
+            Get
+                Return CType(Me("FromEmail"),String)
+            End Get
+            Set
+                Me("FromEmail") = value
             End Set
         End Property
     End Class

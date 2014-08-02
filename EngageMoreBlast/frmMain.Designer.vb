@@ -44,6 +44,8 @@ Partial Class frmMain
         Me.btnBreak = New System.Windows.Forms.Button()
         Me.txtMandrill = New System.Windows.Forms.TextBox()
         Me.Label7 = New System.Windows.Forms.Label()
+        Me.btnFirst = New System.Windows.Forms.Button()
+        Me.btnLast = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'btnSend
@@ -216,11 +218,31 @@ Partial Class frmMain
         Me.Label7.TabIndex = 17
         Me.Label7.Text = "Mandrill API Key"
         '
+        'btnFirst
+        '
+        Me.btnFirst.Location = New System.Drawing.Point(237, 499)
+        Me.btnFirst.Name = "btnFirst"
+        Me.btnFirst.Size = New System.Drawing.Size(114, 23)
+        Me.btnFirst.TabIndex = 19
+        Me.btnFirst.Text = "Insert First Name"
+        Me.btnFirst.UseVisualStyleBackColor = True
+        '
+        'btnLast
+        '
+        Me.btnLast.Location = New System.Drawing.Point(357, 499)
+        Me.btnLast.Name = "btnLast"
+        Me.btnLast.Size = New System.Drawing.Size(114, 23)
+        Me.btnLast.TabIndex = 20
+        Me.btnLast.Text = "Insert Last Name"
+        Me.btnLast.UseVisualStyleBackColor = True
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(745, 677)
+        Me.Controls.Add(Me.btnLast)
+        Me.Controls.Add(Me.btnFirst)
         Me.Controls.Add(Me.txtMandrill)
         Me.Controls.Add(Me.Label7)
         Me.Controls.Add(Me.btnBreak)
@@ -268,5 +290,7 @@ Partial Class frmMain
     Friend WithEvents btnBreak As System.Windows.Forms.Button
     Friend WithEvents txtMandrill As System.Windows.Forms.TextBox
     Friend WithEvents Label7 As System.Windows.Forms.Label
+    Friend WithEvents btnFirst As System.Windows.Forms.Button
+    Friend WithEvents btnLast As System.Windows.Forms.Button
 
 End Class
