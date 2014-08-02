@@ -285,7 +285,9 @@ Partial Class frmMain
         Me.Controls.Add(Me.txtFile)
         Me.Controls.Add(Me.btnBrowse)
         Me.Controls.Add(Me.btnSend)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.MaximizeBox = False
         Me.Name = "frmMain"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "EngageMore Blast!"

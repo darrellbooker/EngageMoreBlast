@@ -249,23 +249,27 @@ Public Class frmMain
                     Dim emailresults As New List(Of Mandrill.EmailResult)
                     emailresults = api.SendMessage(email)
 
-                    'For Each t As EmailResult In emailresults
+                    For Each t As EmailResult In emailresults
 
-                    '    If EmailResultStatus.Sent = EmailResultStatus.Sent Then
-                    '        MsgBox("Emails sent")
-                    '    Else
-                    '        MsgBox("Error sending")
-                    '    End If
+                        If EmailResultStatus.Sent = EmailResultStatus.Sent Then
+                            intQueued = intQueued + 1
+                            intProcessed = intProcessed + 1
+                            System.Threading.Thread.Sleep(5)
+                            worker.ReportProgress(intProcessed)
+                        Else
+                            'MsgBox(t.RejectReason)
+                            intProcessed = intProcessed + 1
+                            System.Threading.Thread.Sleep(5)
+                            worker.ReportProgress(intProcessed)
+                        End If
 
-                    'Next
-                    intQueued = intQueued + 1
-                    intProcessed = intProcessed + 1
-                    System.Threading.Thread.Sleep(5)
-                    worker.ReportProgress(intProcessed)
+                    Next
+                    
 
                 Next
 
             Catch ex As Exception
+                'MsgBox(ex.Message)
                 intProcessed = intProcessed + 1
                 System.Threading.Thread.Sleep(5)
                 worker.ReportProgress(intProcessed)
