@@ -9,6 +9,8 @@ Imports Mandrill
 Public Class frmMain
 
     Public lstContact As New List(Of Contact)
+    Public intQueued As Long
+    Public intProcessed As Long
     Public Class Contact
 
 
@@ -59,56 +61,17 @@ Public Class frmMain
             Exit Sub
         End If
 
-        'store user seetins
+        'store user settings
         My.Settings.MandrillAPI = Me.txtMandrill.Text
         My.Settings.FromEmail = Me.txtFromEmail.Text
         My.Settings.FromName = Me.txtFromName.Text
 
-        'loop thriugh each contact
-        Try
-            For Each c As Contact In lstContact
-                Dim api As New MandrillApi(Me.txtMandrill.Text)
+        'initialize progress bar
+        Me.prgProcessed.Value = 0
+        Me.prgProcessed.Step = 1
+        Me.prgProcessed.Maximum = lstContact.Count
 
-                Dim email As New Mandrill.EmailMessage()
-                email.auto_text = True
-                email.from_email = Me.txtFromEmail.Text
-                email.from_name = Me.txtFromName.Text
-                'email.AddHeader("Reply-To", replyto)
-
-                email.html = Me.txtBody.Text.Replace("{First}", c.First).Replace("{Last}", c.Last)
-                email.important = False
-                'Dim metadata As New Metadata()
-                'metadata.website = "test.com"
-                'message.metadata = metadata
-                email.subject = Me.txtSubject.Text
-
-                Dim lstTags As New List(Of String)
-                lstTags.Add(Me.txtTag.Text)
-                email.tags = lstTags
-                email.track_clicks = True
-                email.track_opens = True
-
-                Dim lstSendTo As New List(Of EmailAddress)
-                lstSendTo.Add(New EmailAddress(c.Email, c.First & " " & c.Last, "to"))
-                email.to = lstSendTo
-
-                Dim emailresults As New List(Of Mandrill.EmailResult)
-                emailresults = api.SendMessage(email)
-
-                'For Each t As EmailResult In emailresults
-
-                '    If EmailResultStatus.Sent = EmailResultStatus.Sent Then
-                '        MsgBox("Emails sent")
-                '    Else
-                '        MsgBox("Error sending")
-                '    End If
-
-                'Next
-            Next
-            MsgBox("Emails sent")
-        Catch ex As Exception
-            MsgBox("Error sending:" & ex.Message)
-        End Try
+        BackgroundWorker1.RunWorkerAsync()
     End Sub
 
 
@@ -230,6 +193,8 @@ Public Class frmMain
         If String.IsNullOrEmpty(My.Settings.MandrillAPI) = False Then Me.txtMandrill.Text = My.Settings.MandrillAPI
         If String.IsNullOrEmpty(My.Settings.FromEmail) = False Then Me.txtFromEmail.Text = My.Settings.FromEmail
         If String.IsNullOrEmpty(My.Settings.FromName) = False Then Me.txtFromName.Text = My.Settings.FromName
+
+        OpenFileDialog1.Filter = "Excel or csv files (*.xls, *.xlsx, *.csv) | *.xls; *.xlsx; *.csv"
     End Sub
 
     Private Sub btnFirst_Click(sender As Object, e As EventArgs) Handles btnFirst.Click
@@ -240,5 +205,81 @@ Public Class frmMain
     Private Sub btnLast_Click(sender As Object, e As EventArgs) Handles btnLast.Click
         txtBody.SelectedText = "{Last}"
         Me.txtBody.Focus()
+    End Sub
+
+    Private Sub BackgroundWorker1_DoWork(sender As Object, e As DoWorkEventArgs) Handles BackgroundWorker1.DoWork
+        Dim worker As BackgroundWorker = CType(sender, BackgroundWorker)
+        If (worker.CancellationPending = True) Then
+            e.Cancel = True
+            Exit Sub
+        Else
+           
+            'loop through each contact
+            intQueued = 0
+            intProcessed = 0
+
+            Try
+
+                For Each c As Contact In lstContact
+                    Dim api As New MandrillApi(Me.txtMandrill.Text)
+
+                    Dim email As New Mandrill.EmailMessage()
+                    email.auto_text = True
+                    email.from_email = Me.txtFromEmail.Text
+                    email.from_name = Me.txtFromName.Text
+                    'email.AddHeader("Reply-To", replyto)
+
+                    email.html = Me.txtBody.Text.Replace("{First}", c.First).Replace("{Last}", c.Last)
+                    email.important = False
+                    'Dim metadata As New Metadata()
+                    'metadata.website = "test.com"
+                    'message.metadata = metadata
+                    email.subject = Me.txtSubject.Text
+
+                    Dim lstTags As New List(Of String)
+                    lstTags.Add(Me.txtTag.Text)
+                    email.tags = lstTags
+                    email.track_clicks = True
+                    email.track_opens = True
+
+                    Dim lstSendTo As New List(Of EmailAddress)
+                    lstSendTo.Add(New EmailAddress(c.Email, c.First & " " & c.Last, "to"))
+                    email.to = lstSendTo
+
+                    Dim emailresults As New List(Of Mandrill.EmailResult)
+                    emailresults = api.SendMessage(email)
+
+                    'For Each t As EmailResult In emailresults
+
+                    '    If EmailResultStatus.Sent = EmailResultStatus.Sent Then
+                    '        MsgBox("Emails sent")
+                    '    Else
+                    '        MsgBox("Error sending")
+                    '    End If
+
+                    'Next
+                    intQueued = intQueued + 1
+                    intProcessed = intProcessed + 1
+                    System.Threading.Thread.Sleep(5)
+                    worker.ReportProgress(intProcessed)
+
+                Next
+
+            Catch ex As Exception
+                intProcessed = intProcessed + 1
+                System.Threading.Thread.Sleep(5)
+                worker.ReportProgress(intProcessed)
+            End Try
+
+        End If
+    End Sub
+
+    Private Sub BackgroundWorker1_ProgressChanged(sender As Object, e As ProgressChangedEventArgs) Handles BackgroundWorker1.ProgressChanged
+        Me.prgProcessed.Value = e.ProgressPercentage
+        Me.lblProgress.Text = "Processed " & e.ProgressPercentage & " of " & Me.lstContact.Count
+    End Sub
+
+    Private Sub BackgroundWorker1_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs) Handles BackgroundWorker1.RunWorkerCompleted
+        MsgBox("Complete. Total Contacts: " & lstContact.Count & ", Total Processed: " & intProcessed & ", Successfully Queued: " & intQueued)
     End Sub
 End Class

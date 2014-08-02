@@ -46,6 +46,10 @@ Partial Class frmMain
         Me.Label7 = New System.Windows.Forms.Label()
         Me.btnFirst = New System.Windows.Forms.Button()
         Me.btnLast = New System.Windows.Forms.Button()
+        Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
+        Me.prgProcessed = New System.Windows.Forms.ToolStripProgressBar()
+        Me.lblProgress = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'btnSend
@@ -59,7 +63,6 @@ Partial Class frmMain
         '
         'OpenFileDialog1
         '
-        Me.OpenFileDialog1.FileName = "OpenFileDialog1"
         '
         'btnBrowse
         '
@@ -83,10 +86,10 @@ Partial Class frmMain
         Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label1.Location = New System.Drawing.Point(43, 9)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(552, 13)
+        Me.Label1.Size = New System.Drawing.Size(518, 13)
         Me.Label1.TabIndex = 3
-        Me.Label1.Text = "Step 1: Select excel file (Column A as email, Column B as first name and Column C" & _
-    " as last name)"
+        Me.Label1.Text = "Step 1: Select file (Column A as email, Column B as first name and Column C as la" & _
+    "st name)"
         '
         'lblContacts
         '
@@ -236,11 +239,31 @@ Partial Class frmMain
         Me.btnLast.Text = "Insert Last Name"
         Me.btnLast.UseVisualStyleBackColor = True
         '
+        'StatusStrip1
+        '
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.prgProcessed, Me.lblProgress})
+        Me.StatusStrip1.Location = New System.Drawing.Point(0, 655)
+        Me.StatusStrip1.Name = "StatusStrip1"
+        Me.StatusStrip1.Size = New System.Drawing.Size(745, 22)
+        Me.StatusStrip1.TabIndex = 21
+        Me.StatusStrip1.Text = "StatusStrip1"
+        '
+        'prgProcessed
+        '
+        Me.prgProcessed.Name = "prgProcessed"
+        Me.prgProcessed.Size = New System.Drawing.Size(550, 16)
+        '
+        'lblProgress
+        '
+        Me.lblProgress.Name = "lblProgress"
+        Me.lblProgress.Size = New System.Drawing.Size(0, 17)
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(745, 677)
+        Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.btnLast)
         Me.Controls.Add(Me.btnFirst)
         Me.Controls.Add(Me.txtMandrill)
@@ -264,7 +287,10 @@ Partial Class frmMain
         Me.Controls.Add(Me.btnSend)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "frmMain"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "EngageMore Blast!"
+        Me.StatusStrip1.ResumeLayout(False)
+        Me.StatusStrip1.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -292,5 +318,8 @@ Partial Class frmMain
     Friend WithEvents Label7 As System.Windows.Forms.Label
     Friend WithEvents btnFirst As System.Windows.Forms.Button
     Friend WithEvents btnLast As System.Windows.Forms.Button
+    Friend WithEvents StatusStrip1 As System.Windows.Forms.StatusStrip
+    Friend WithEvents prgProcessed As System.Windows.Forms.ToolStripProgressBar
+    Friend WithEvents lblProgress As System.Windows.Forms.ToolStripStatusLabel
 
 End Class
