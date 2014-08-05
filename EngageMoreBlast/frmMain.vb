@@ -61,17 +61,21 @@ Public Class frmMain
             Exit Sub
         End If
 
+
         'store user settings
         My.Settings.MandrillAPI = Me.txtMandrill.Text
         My.Settings.FromEmail = Me.txtFromEmail.Text
         My.Settings.FromName = Me.txtFromName.Text
+        Dim response = MsgBox("Are you sure you wish to send this email to " & lstContact.Count & " contacts with the following subject" & Environment.NewLine & Environment.NewLine & "'" & Me.txtSubject.Text & "'" & Environment.NewLine & Environment.NewLine & "Using Mandrill Tag: " & Me.txtTag.Text, MsgBoxStyle.YesNo, "Confirm")
 
-        'initialize progress bar
-        Me.prgProcessed.Value = 0
-        Me.prgProcessed.Step = 1
-        Me.prgProcessed.Maximum = lstContact.Count
+        If response = MsgBoxResult.Yes Then
+            'initialize progress bar
+            Me.prgProcessed.Value = 0
+            Me.prgProcessed.Step = 1
+            Me.prgProcessed.Maximum = lstContact.Count
 
-        BackgroundWorker1.RunWorkerAsync()
+            BackgroundWorker1.RunWorkerAsync()
+        End If
     End Sub
 
 
